@@ -27,7 +27,7 @@ Compaction like that:
 - Reserve last 12 hours city data in table 'work' (361 * 13, 1 for new increasing)
 - Cities and stations information must be reserved (361 + 1495)
 
-Total is 1495 * 3 + 361 * 13 = 9539 < 10000
+Total is 1495 * 3 + 361 * 14 = 9539 < 10000
 
 ## All APIs
 1. List for available cities
