@@ -3,8 +3,7 @@ import crawler
 import initialization
 import sys, pymysql, os, urllib.parse
 
-CLEARDB_DATABASE_URL = 'mysql://b3cca747395bff:8264fa51@us-cdbr-iron-east-05.cleardb.net/heroku_33676382519b921?reconnect=true'
-
+CLEARDB_DATABASE_URL = os.environ["CLEARDB_DATABASE_URL"]
 urllib.parse.uses_netloc.append("mysql")
 url = urllib.parse.urlparse(CLEARDB_DATABASE_URL)
 
