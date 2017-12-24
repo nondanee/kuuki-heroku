@@ -1,5 +1,5 @@
 # kuuki-heroku
-kuuki's server deployed on herku  
+kuuki's server deployed on heroku  
 Powered by python3 & flask & mysql
 
 ## Required Add-ons
