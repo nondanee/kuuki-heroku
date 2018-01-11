@@ -9,13 +9,7 @@ def latest():
     cities = cities.split(",")
     if len(list(set(cities))) != len(cities): abort(400)
 
-    where = ""
-
-    for city in cities:
-        if utils.codes.check(city) == 0: abort(400)
-        else: where += " city_code = {} or".format(city)
-
-    where = where[:-2]
+    for city in cities: if utils.codes.check(city) == 0: abort(400)
 
     sql = '''
         SELECT 
@@ -60,8 +54,8 @@ def latest():
             FROM work
             WHERE time_point = (SELECT MAX(time_point) FROM work)
         ) nearest_data
-        WHERE {}
-    '''.format(where)
+        WHERE city_code IN ({})
+    '''.format(','.join(cities))
 
     cursor = mysql.get_db().cursor()
     cursor.execute(sql)
