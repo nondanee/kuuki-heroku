@@ -8,7 +8,7 @@ def last(hours):
 
     city = request.args.get("city")
     if city is None: abort(400)
-    if utils.codes.check(city) == 0: abort(400)
+    if not utils.codes.available(city): abort(400)
 
     sql = '''
         SELECT

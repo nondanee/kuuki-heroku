@@ -9,7 +9,9 @@ def latest():
     cities = cities.split(",")
     if len(list(set(cities))) != len(cities): abort(400)
 
-    for city in cities: if utils.codes.check(city) == 0: abort(400)
+    for city in cities: 
+        if not utils.codes.available(city): 
+            abort(400)
 
     sql = '''
         SELECT 

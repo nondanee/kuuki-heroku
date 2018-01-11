@@ -362,6 +362,6 @@ all = {
     "659004":""
 }
 
-def check(city_code):
+def available(city_code):
     if city_code in all: return 1
     else: return 0
