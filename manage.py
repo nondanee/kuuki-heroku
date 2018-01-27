@@ -7,9 +7,9 @@ from urllib import parse
 parse.uses_netloc.append("postgres")
 url = parse.urlparse(os.environ["DATABASE_URL"])
 db_config = "dbname={} user={} password={} host={} port={}".format(url.path[1:],url.username,url.password,url.hostname,url.port)
+app = server.create(db_config)
 
 def runserver():
-	app = server.create(db_config)
 	app.run()
 
 def runcrawler():
@@ -21,9 +21,6 @@ def init():
     connect = psycopg2.connect(db_config)
     initialization.run(connect)
     connect.close()
-
-def deploy():
-	return server.create(db_config)
 
 if __name__ == "__main__":
     try:
