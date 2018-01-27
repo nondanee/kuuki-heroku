@@ -1,7 +1,7 @@
-from flask import jsonify
-from . import app, mysql
+from flask import g, jsonify
+from . import main
 
-@app.route("/aqi/cities")
+@main.route("/cities")
 def cities():
     
     sql = '''
@@ -13,7 +13,7 @@ def cities():
        ORDER BY city_code
     '''
 
-    cursor = mysql.get_db().cursor()
+    cursor = g.db.cursor()
     cursor.execute(sql)
     out = cursor.fetchall()
     cursor.close()

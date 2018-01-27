@@ -1,7 +1,7 @@
-from flask import request, jsonify
-from . import app, mysql
+from flask import g, request, jsonify
+from . import main
 
-@app.route("/aqi/rank")
+@main.route("/rank")
 def rank():
 
     order = "ASC"
@@ -33,7 +33,7 @@ def rank():
         ORDER BY aqi {}
     '''.format(order)
 
-    cursor = mysql.get_db().cursor()
+    cursor = g.db.cursor()
     cursor.execute(sql)
     out = cursor.fetchall()
     cursor.close()

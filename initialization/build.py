@@ -7,70 +7,70 @@ def creatTables(connect):
     try:
         cursor.execute('''
             create table city(
-                city_code int(6) not null,
+                city_code integer not null,
                 city_name_zh varchar(20) not null,
                 city_name_en varchar(20) not null,
-                province_code int(2) not null,
-                PRIMARY KEY(city_code)
+                province_code integer not null,
+                primary key(city_code)
             )
         ''')
         cursor.execute('''
             create table station(
                 station_code varchar(5) not null,
-                city_code int(6) not null,
+                city_code integer not null,
                 position_name varchar(15) not null,
-                longitude Decimal(10,7) not null,
-                latitude Decimal(10,7) not null,
-                PRIMARY KEY(station_code),
-                FOREIGN KEY(city_code) references city(city_code)
+                longitude numeric(10,7) not null,
+                latitude numeric(10,7) not null,
+                primary key(station_code),
+                foreign key(city_code) references city(city_code)
             )
             ''')
         cursor.execute('''
             create table raw(
-                time_point datetime not null,
+                time_point timestamp not null,
                 station_code varchar(5) not null,
-                aqi int(3),
-                o3 int(4),
-                o3_24h int(4),
-                o3_8h int(4),
-                o3_8h_24h int(4),
-                co Decimal(4,1),
-                co_24h Decimal(4,1),
-                so2 int(4),
-                so2_24h int(4),
-                no2 int(4),
-                no2_24h int(4),
-                pm2_5 int(3),
-                pm2_5_24h int(3),
-                pm10 int(3),
-                pm10_24h int(3),
-                primary_pollutant tinyint(2),
-                PRIMARY KEY(time_point,station_code),
-                FOREIGN KEY(station_code) references station(station_code)
+                aqi integer,
+                o3 integer,
+                o3_24h integer,
+                o3_8h integer,
+                o3_8h_24h integer,
+                co numeric(4,1),
+                co_24h numeric(4,1),
+                so2 integer,
+                so2_24h integer,
+                no2 integer,
+                no2_24h integer,
+                pm2_5 integer,
+                pm2_5_24h integer,
+                pm10 integer,
+                pm10_24h integer,
+                primary_pollutant smallint,
+                primary key(time_point,station_code),
+                foreign key(station_code) references station(station_code)
             )
             ''')
         cursor.execute('''
             create table work (
-                time_point datetime not null,
-                city_code int(6) not null,
-                aqi int(3),
-                aqi_change int(3),
-                o3 int(4),
-                o3_24h int(4),
-                o3_8h int(4),
-                o3_8h_24h int(4),
-                co Decimal(4,1),
-                co_24h Decimal(4,1),
-                so2 int(4),
-                so2_24h int(4),
-                no2 int(4),
-                no2_24h int(4),
-                pm2_5 int(3),
-                pm2_5_24h int(3),
-                pm10 int(3),
-                pm10_24h int(3),
-                PRIMARY KEY(time_point,city_code),
-                FOREIGN KEY(city_code) references city(city_code)
+                time_point timestamp not null,
+                city_code integer not null,
+                aqi integer,
+                aqi_change integer,
+                o3 integer,
+                o3_24h integer,
+                o3_8h integer,
+                o3_8h_24h integer,
+                co numeric(4,1),
+                co_24h numeric(4,1),
+                so2 integer,
+                so2_24h integer,
+                no2 integer,
+                no2_24h integer,
+                pm2_5 integer,
+                pm2_5_24h integer,
+                pm10 integer,
+                pm10_24h integer,
+                primary key(time_point,city_code),
+                foreign key(city_code) references city(city_code)
             )
             ''')
         connect.commit()
@@ -84,7 +84,7 @@ def fillCityTable(connect):
     data = f.read()
     f.close()
 
-    sql = "INSERT INTO city VALUES (%s, %s, %s, %s)"
+    sql = "insert into city values (%s,%s,%s,%s)"
     params = []
 
     cities = data.split("\n")
@@ -109,7 +109,7 @@ def fillStationTable(connect):
     data = f.read()
     f.close()
 
-    sql = "INSERT INTO station VALUES (%s, %s, %s, %s, %s)"
+    sql = "insert into station values (%s,%s,%s,%s,%s)"
     params = []
 
     stations = data.split("\n")

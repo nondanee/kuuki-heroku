@@ -46,14 +46,14 @@ def checkValue(value,reserve=0):
         return int(float(value))
         
 def checkEmpty(value):
-    if value == u'\u2014' or value is None:
+    if value == '\u2014' or value is None:
         return ''
     else:
         return value
         
 def getPrimaryPollutant(string):
 
-    if string == u'\u2014':
+    if string == '\u2014':
         return 0
         
     PrimaryPollutant = 0b000000
@@ -151,7 +151,7 @@ def pullRawData(connect):
         params.append([TimePoint,StationCode,AQI,O3,O3_24h,O3_8h,O3_8h_24h,CO,CO_24h,SO2,SO2_24h,NO2,NO2_24h,PM2_5,PM2_5_24h,PM10,PM10_24h,PrimaryPollutant])
 
     
-    sql = "INSERT INTO raw VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = "insert into raw values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     
     cursor = connect.cursor()
     
@@ -168,36 +168,36 @@ def pullRawData(connect):
 def processData(connect):
     
     sqlLastHour = '''
-        SELECT 
-        aqi 
-        FROM work 
-        WHERE work.time_point = (SELECT DATE_SUB( MAX(time_point), INTERVAL 1 HOUR) FROM raw)
-        ORDER BY work.city_code
+        select 
+        aqi
+        from work
+        where work.time_point = (select max(time_point) - interval '1 hour' from raw)
+        order by work.city_code
     '''
     
     sqlThisHour = '''
-        SELECT
-        raw.time_point,
+        select
+        max(raw.time_point),
         station.city_code,
-        AVG(raw.aqi),
-        AVG(raw.o3),
-        AVG(raw.o3_24h),
-        AVG(raw.o3_8h),
-        AVG(raw.o3_8h_24h),
-        AVG(raw.co),
-        AVG(raw.co_24h),
-        AVG(raw.so2),
-        AVG(raw.so2_24h),
-        AVG(raw.no2),
-        AVG(raw.no2_24h),
-        AVG(raw.pm2_5),
-        AVG(raw.pm2_5_24h),
-        AVG(raw.pm10),
-        AVG(raw.pm10_24h)
-        FROM raw,station 
-        WHERE raw.time_point = (SELECT MAX(time_point) FROM raw) 
-        AND raw.station_code = station.station_code 
-        GROUP BY station.city_code
+        avg(raw.aqi),
+        avg(raw.o3),
+        avg(raw.o3_24h),
+        avg(raw.o3_8h),
+        avg(raw.o3_8h_24h),
+        avg(raw.co),
+        avg(raw.co_24h),
+        avg(raw.so2),
+        avg(raw.so2_24h),
+        avg(raw.no2),
+        avg(raw.no2_24h),
+        avg(raw.pm2_5),
+        avg(raw.pm2_5_24h),
+        avg(raw.pm10),
+        avg(raw.pm10_24h)
+        from raw,station 
+        where raw.time_point = (select max(time_point) from raw)
+        and raw.station_code = station.station_code 
+        group by station.city_code
     '''
     
     
@@ -234,7 +234,7 @@ def processData(connect):
         params.append(param)
         
         
-    sql = "INSERT INTO work VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = "insert into work values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     
     try:        
         cursor.executemany(sql,params)
@@ -247,15 +247,15 @@ def processData(connect):
 def compactTable(connect):
 
     sqlRaw = '''
-        DELETE
-        FROM raw 
-        WHERE raw.time_point < (SELECT MAX(time_point) FROM work)
+        delete
+        from raw 
+        where raw.time_point < (select max(time_point) from raw)
     '''
 
     sqlWork = '''
-        DELETE
-        FROM work 
-        WHERE work.time_point < (SELECT DATE_SUB( MAX(time_point), INTERVAL 11 HOUR) FROM raw)
+        delete
+        from work 
+        where work.time_point < (select max(time_point) - interval '11 hour' from raw)
     '''
 
     cursor = connect.cursor()

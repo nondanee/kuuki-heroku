@@ -1,8 +1,9 @@
-from flask import request, abort, jsonify
-from . import app, mysql, utils
+from flask import g, request, abort, jsonify
+from . import main, codes
 
-@app.route("/aqi/latest")
+@main.route("/latest")
 def latest():
+
     cities = request.args.get("cities")
     if cities is None: abort(400)
 
@@ -10,7 +11,7 @@ def latest():
     if len(list(set(cities))) != len(cities): abort(400)
 
     for city in cities: 
-        if not utils.codes.available(city): 
+        if not codes.available(city): 
             abort(400)
 
     sql = '''
@@ -59,7 +60,7 @@ def latest():
         WHERE city_code IN ({})
     '''.format(','.join(cities))
 
-    cursor = mysql.get_db().cursor()
+    cursor = g.db.cursor()
     cursor.execute(sql)
     out = cursor.fetchall()
     cursor.close()

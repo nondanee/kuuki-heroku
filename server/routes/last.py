@@ -1,14 +1,14 @@
-from flask import request, abort, jsonify
-from . import app, mysql, utils
+from flask import g, request, abort, jsonify
+from . import main, codes
 
-@app.route('/aqi/last<int:hours>h')
+@main.route('/last<int:hours>h')
 def last(hours):
 
     if hours < 1 or hours > 12: abort(400)
 
     city = request.args.get("city")
     if city is None: abort(400)
-    if not utils.codes.available(city): abort(400)
+    if not codes.available(city): abort(400)
 
     sql = '''
         SELECT
@@ -32,10 +32,10 @@ def last(hours):
         pm10_24h
         FROM work 
         WHERE city_code = {}
-        AND time_point > (SELECT DATE_SUB( MAX(time_point), INTERVAL {} HOUR) FROM work)
+        AND time_point > (SELECT MAX(time_point) - INTERVAL '{}' HOUR FROM work)
     '''.format(city,hours)
 
-    cursor = mysql.get_db().cursor()
+    cursor = g.db.cursor()
     cursor.execute(sql)
     out = cursor.fetchall()
     cursor.close()

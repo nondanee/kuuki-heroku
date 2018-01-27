@@ -1,37 +1,29 @@
 import server
 import crawler
 import initialization
-import sys, pymysql, os, urllib.parse
+import os, sys, psycopg2
+from urllib import parse
 
-CLEARDB_DATABASE_URL = os.environ["CLEARDB_DATABASE_URL"]
-urllib.parse.uses_netloc.append("mysql")
-url = urllib.parse.urlparse(CLEARDB_DATABASE_URL)
+parse.uses_netloc.append("postgres")
+url = parse.urlparse(os.environ["DATABASE_URL"])
+db_config = "dbname={} user={} password={} host={} port={}".format(url.path[1:],url.username,url.password,url.hostname,url.port)
 
 def runserver():
-	server.app.run()
+	app = server.create(db_config)
+	app.run()
 
 def runcrawler():
-    connect = pymysql.connect(
-        host = url.hostname,
-        user = url.username,
-        passwd = url.password,
-        db = url.path[1:],
-        charset = "utf8"
-    )
+    connect = psycopg2.connect(db_config)
     crawler.run(connect)
     connect.close()
 
 def init():
-    connect = pymysql.connect(
-        host = url.hostname,
-        user = url.username,
-        passwd = url.password,
-        db = url.path[1:],
-        charset = "utf8"
-    )
+    connect = psycopg2.connect(db_config)
     initialization.run(connect)
     connect.close()
 
+def deploy():
+	return server.create(db_config)
 
 if __name__ == "__main__":
     try:

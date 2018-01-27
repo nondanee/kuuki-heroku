@@ -1,19 +1,20 @@
-from flask import Flask
-from flaskext.mysql import MySQL
-import urllib.parse, os
-
-CLEARDB_DATABASE_URL = os.environ["CLEARDB_DATABASE_URL"]
-urllib.parse.uses_netloc.append("mysql")
-url = urllib.parse.urlparse(CLEARDB_DATABASE_URL)
-
-app = Flask(__name__)
-app.config["MYSQL_DATABASE_HOST"] = url.hostname
-app.config["MYSQL_DATABASE_USER"] = url.username
-app.config["MYSQL_DATABASE_PASSWORD"] = url.password
-app.config["MYSQL_DATABASE_DB"] = url.path[1:]
-
-mysql = MySQL()
-mysql.init_app(app)
-
-from . import utils
+from flask import Flask, g
 from . import routes
+import psycopg2
+
+def create(db_config):
+    app = Flask(__name__)
+
+    @app.before_request
+    def before_request():
+        g.db = psycopg2.connect(db_config)
+
+    @app.teardown_request
+    def teardown_request(exception):
+        db = getattr(g, 'db', None)
+        if db is not None:
+            db.close()
+
+    routes.attach(app)
+
+    return app
