@@ -1,15 +1,14 @@
 # kuuki-heroku
 kuuki's server deployed on heroku  
-Powered by python3 & flask & mysql
+Powered by python3 & flask & postgresql
 
 ## Required Add-ons
-- ClearDB MySQL Ignite (free but need verifying account)
+- Heroku Postgres Hobby Dev (default addon)
 - Heroku Scheduler (free but need verifying account)
 
 ## Deployment
 ```
 $ heroku create
-$ heroku addons:create cleardb:ignite
 $ git push heroku master
 $ heroku run python manage.py init
 ```
@@ -52,8 +51,8 @@ GET /aqi/last4h?city=110000
 ```
 
 ## Reference
-hebingchang / air-in-china [(https://github.com/hebingchang/air-in-china)](https://github.com/hebingchang/air-in-china)  
-ernw / python-wcfbin [(https://github.com/ernw/python-wcfbin)](https://github.com/ernw/python-wcfbin)
+hebingchang/air-in-china [(https://github.com/hebingchang/air-in-china)](https://github.com/hebingchang/air-in-china)  
+ernw/python-wcfbin [(https://github.com/ernw/python-wcfbin)](https://github.com/ernw/python-wcfbin)
 
 ## License
 This project is under [the MIT License](https://mit-license.org/).
