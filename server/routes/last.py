@@ -33,6 +33,7 @@ def last(hours):
         FROM work 
         WHERE city_code = {}
         AND time_point > (SELECT MAX(time_point) - INTERVAL '{}' HOUR FROM work)
+        ORDER BY time_point
     '''.format(city,hours)
 
     cursor = g.db.cursor()
