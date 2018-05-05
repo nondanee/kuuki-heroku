@@ -7,12 +7,21 @@ Powered by python3 & flask & postgresql
 - Heroku Scheduler (free but need verifying account)
 
 ## Deployment
+
+Click this button
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+Or run below lines in terminal
+
 ```
+$ git clone https://github.com/nondanee/kuuki-heroku.git && cd kuuki-heroku
 $ heroku create
+$ heroku addons:create scheduler:standard
 $ git push heroku master
 $ heroku run python manage.py init
 ```
-Add command ```python manage.py runcrawler``` to scheduler dashboard  
+Then add command ```python manage.py runcrawler``` to scheduler dashboard  
 Set frequency ```hourly```, next due ```:30```
 
 (It is observed that official Silverlight publishing platform udpate its data around :28)
