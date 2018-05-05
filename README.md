@@ -12,7 +12,7 @@ Click this button
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-Or run below lines in terminal
+Or run following lines in terminal
 
 ```
 $ git clone https://github.com/nondanee/kuuki-heroku.git && cd kuuki-heroku
