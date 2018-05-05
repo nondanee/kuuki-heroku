@@ -166,7 +166,7 @@ def processData(connect):
     
     sqlLastHour = '''
         select
-        work.city_code
+        work.city_code,
         work.aqi
         from work
         where work.time_point = (select max(time_point) - interval '1 hour' from raw)
