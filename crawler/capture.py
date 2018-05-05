@@ -223,6 +223,8 @@ def processData(connect):
             aqiChange = None
         elif param[1] not in lastHourData:
             aqiChange = None
+        elif not lastHourData[param[1]]:
+            aqiChange = None
         else:
             aqiChange = param[2] - lastHourData[param[1]]
 
