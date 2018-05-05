@@ -113,12 +113,9 @@ def getTagData(dom,tagName):
 def pullRawData(connect):
     
     allStationsData = getAllStationsData()
-    length = len(allStationsData)
     params = []
     
-    for i in range(0,length):
-
-        stationData = allStationsData[i]
+    for stationData in allStationsData:
 
         TimePoint = datetime.datetime.strptime(getTagData(stationData,"TimePoint"),"%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d %H:%M")
 
@@ -168,8 +165,9 @@ def pullRawData(connect):
 def processData(connect):
     
     sqlLastHour = '''
-        select 
-        aqi
+        select
+        work.city_code
+        work.aqi
         from work
         where work.time_point = (select max(time_point) - interval '1 hour' from raw)
         order by work.city_code
@@ -210,29 +208,27 @@ def processData(connect):
         thisHourData = cursor.fetchall()
     except Exception as e:
         print(e)
-    
-    length = len(thisHourData)
-    
+
+    lastHourData = {item[0]:item[1] for item in lastHourData}
     params = []
 
-    for i in range(0,length):
+    for cityData in thisHourData:
 
-        param = list(thisHourData[i])
-        for j in range(2,17):
-            if j == 7 or j == 8: param[j] = checkValue(param[j],1)
-            else: param[j] = checkValue(param[j])
+        param = list(cityData)
+        for index in range(2,17):
+            if index == 7 or index == 8: param[index] = checkValue(param[index],1)
+            else: param[index] = checkValue(param[index])
 
-        if len(lastHourData) - 1 < i: 
+        if not param[2]:
             aqiChange = None
-        elif param[2] == None or lastHourData[i][0] == None: 
+        elif param[1] not in lastHourData:
             aqiChange = None
-        else: 
-            aqiChange = param[2] - lastHourData[i][0]      
+        else:
+            aqiChange = param[2] - lastHourData[param[1]]
 
         param.insert(3,aqiChange)
         
         params.append(param)
-        
         
     sql = "insert into work values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     

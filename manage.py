@@ -10,7 +10,7 @@ db_config = "dbname={} user={} password={} host={} port={}".format(url.path[1:],
 app = server.create(db_config)
 
 def runserver():
-	app.run()
+    app.run()
 
 def runcrawler():
     connect = psycopg2.connect(db_config)

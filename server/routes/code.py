@@ -1,4 +1,4 @@
-all = {
+codes = {
     "110000":"",
     "120000":"",
     "130100":"",
@@ -363,5 +363,5 @@ all = {
 }
 
 def available(city_code):
-    if city_code in all: return 1
+    if city_code in codes: return 1
     else: return 0

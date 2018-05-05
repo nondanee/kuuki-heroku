@@ -1,17 +1,17 @@
 from flask import g, request, abort, jsonify
-from . import main, codes
+from . import main, code
 
 @main.route("/latest")
 def latest():
 
     cities = request.args.get("cities")
-    if cities is None: abort(400)
+    if not cities: abort(400)
 
     cities = cities.split(",")
     if len(list(set(cities))) != len(cities): abort(400)
 
     for city in cities: 
-        if not codes.available(city): 
+        if not code.available(city): 
             abort(400)
 
     sql = '''
@@ -80,8 +80,8 @@ def latest():
             "o3_24h": city_data[5],
             "o3_8h": city_data[6],
             "o3_8h_24h": city_data[7],
-            "co": float(city_data[8]) if city_data[8] != None else city_data[8],
-            "co_24h": float(city_data[9]) if city_data[9] != None else city_data[9],
+            "co": float(city_data[8]) if city_data[8] else city_data[8],
+            "co_24h": float(city_data[9]) if city_data[9] else city_data[9],
             "so2": city_data[10],
             "so2_24h": city_data[11],
             "no2": city_data[12],
