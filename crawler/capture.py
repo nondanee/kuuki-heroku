@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re, base64, zlib, io
-import urllib.request
+import requests
 import xml.dom.minidom, datetime
 from . import wcf
 
@@ -10,30 +10,29 @@ def getAllStationsData():
     output.write('<GetAllAQIPublishLive xmlns="http://tempuri.org/"></GetAllAQIPublishLive>')
     output.seek(0)
 
-    r = wcf.xml2records.XMLParser.parse(output)
-    rec = wcf.records.dump_records(r)
-    
-    req = urllib.request.Request(
-        url = "http://106.37.208.233:20035/ClientBin/Env-CnemcPublish-RiaServices-EnvCnemcPublishDomainService.svc/binary/GetAllAQIPublishLive",
-        data = rec,
-        headers = {"Content-Type": "application/msbin1"})
-        
-    res = urllib.request.urlopen(req,timeout = 10)
-    dat = res.read()
+    data = wcf.xml2records.XMLParser.parse(output)
+    data = wcf.records.dump_records(data)
 
-    buf = io.BytesIO(dat)
-    r = wcf.records.Record.parse(buf)
+    raw = requests.request(
+        method = 'POST',
+        url = 'http://106.37.208.233:20035/ClientBin/Env-CnemcPublish-RiaServices-EnvCnemcPublishDomainService.svc/binary/GetAllAQIPublishLive',
+        data = data,
+        headers = {'Content-Type': 'application/msbin1'}
+    ).content
 
-    wcf.records.print_records(r, fp=output)
+    raw = io.BytesIO(raw)
+    raw = wcf.records.Record.parse(raw)
+
+    wcf.records.print_records(raw, fp=output)
     output.seek(0)
 
-    pat = re.compile('<[^>]+>')
-    enc = pat.sub('', output.readlines()[1][1:])[:-1]
+    pattern = re.compile('<[^>]+>')
+    records = pattern.sub('', output.readlines()[1][1:])[:-1]
 
-    enc = base64.b64decode(enc)
-    enc = zlib.decompress(enc)
+    records = base64.b64decode(records)
+    records = zlib.decompress(records)
 
-    domTree = xml.dom.minidom.parseString(enc)
+    domTree = xml.dom.minidom.parseString(records)
     collection = domTree.documentElement
     return collection.getElementsByTagName("AQIDataPublishLive")    
 
@@ -56,22 +55,22 @@ def getPrimaryPollutant(string):
     if string == '\u2014':
         return 0
         
-    PrimaryPollutant = 0b000000
+    primaryPollutant = 0b000000
     
     if string.find(u"臭氧") != -1 :
-        PrimaryPollutant += 0b100000
+        primaryPollutant += 0b100000
     if string.find(u"一氧化碳") != -1 :
-        PrimaryPollutant += 0b010000
+        primaryPollutant += 0b010000
     if string.find(u"二氧化硫") != -1 :
-        PrimaryPollutant += 0b001000
+        primaryPollutant += 0b001000
     if string.find(u"二氧化氮") != -1 :
-        PrimaryPollutant += 0b000100
+        primaryPollutant += 0b000100
     if string.find(u"PM2.5") != -1 :
-        PrimaryPollutant += 0b000010
+        primaryPollutant += 0b000010
     if string.find(u"PM10") != -1 :
-        PrimaryPollutant += 0b000001
+        primaryPollutant += 0b000001
     
-    return PrimaryPollutant
+    return primaryPollutant
 
 def calcIAQI(value,valueType):
     
@@ -108,7 +107,29 @@ def calcIAQI(value,valueType):
     return 0
 
 def getTagData(dom,tagName):
+
     return dom.getElementsByTagName(tagName)[0].childNodes[0].data
+
+def updateStationsInfo(allStationsData,connect):
+
+    sql = "insert into station values (%s,%s,%s,%s,%s)"
+    cursor = connect.cursor()
+
+    for stationData in allStationsData:
+        stationCode = getTagData(stationData,"StationCode")
+        cityCode = getTagData(stationData,"CityCode")
+        positionName = getTagData(stationData,"PositionName")
+        longitude = getTagData(stationData,"Longitude")
+        latitude = getTagData(stationData,"Latitude")
+
+        try:
+            cursor.execute(sql,(stationCode,cityCode,positionName,longitude,latitude))
+        except:
+            pass
+
+    connect.commit()
+    cursor.close()
+
 
 def pullRawData(connect):
     
@@ -117,39 +138,38 @@ def pullRawData(connect):
     
     for stationData in allStationsData:
 
-        TimePoint = datetime.datetime.strptime(getTagData(stationData,"TimePoint"),"%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d %H:%M")
+        timePoint = datetime.datetime.strptime(getTagData(stationData,"TimePoint"),"%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d %H:%M")
 
-        StationCode = getTagData(stationData,"StationCode")
+        stationCode = getTagData(stationData,"StationCode")
         
         AQI = checkValue(getTagData(stationData,"AQI"))
 
-        O3 = checkValue(getTagData(stationData,"O3"))
-        O3_24h = checkValue(getTagData(stationData,"O3_24h"))
-        O3_8h = checkValue(getTagData(stationData,"O3_8h"))
-        O3_8h_24h = checkValue(getTagData(stationData,"O3_8h_24h"))
+        o3 = checkValue(getTagData(stationData,"O3"))
+        o3_24h = checkValue(getTagData(stationData,"O3_24h"))
+        o3_8h = checkValue(getTagData(stationData,"O3_8h"))
+        o3_8h_24h = checkValue(getTagData(stationData,"O3_8h_24h"))
         
-        CO = checkValue(getTagData(stationData,"CO"),1)
-        CO_24h = checkValue(getTagData(stationData,"CO_24h"),1)
+        co = checkValue(getTagData(stationData,"CO"),1)
+        co_24h = checkValue(getTagData(stationData,"CO_24h"),1)
 
-        SO2 = checkValue(getTagData(stationData,"SO2"))
-        SO2_24h = checkValue(getTagData(stationData,"SO2_24h"))
+        so2 = checkValue(getTagData(stationData,"SO2"))
+        so2_24h = checkValue(getTagData(stationData,"SO2_24h"))
         
-        NO2 = checkValue(getTagData(stationData,"NO2"))
-        NO2_24h = checkValue(getTagData(stationData,"NO2_24h"))
+        no2 = checkValue(getTagData(stationData,"NO2"))
+        no2_24h = checkValue(getTagData(stationData,"NO2_24h"))
         
-        PM2_5 = checkValue(getTagData(stationData,"PM2_5"))
-        PM2_5_24h = checkValue(getTagData(stationData,"PM2_5_24h"))
+        pm2_5 = checkValue(getTagData(stationData,"PM2_5"))
+        pm2_5_24h = checkValue(getTagData(stationData,"PM2_5_24h"))
         
-        PM10 = checkValue(getTagData(stationData,"PM10"))
-        PM10_24h = checkValue(getTagData(stationData,"PM10_24h"))
+        pm10 = checkValue(getTagData(stationData,"PM10"))
+        pm10_24h = checkValue(getTagData(stationData,"PM10_24h"))
         
-        PrimaryPollutant = getPrimaryPollutant(getTagData(stationData,"PrimaryPollutant"))
+        primaryPollutant = getPrimaryPollutant(getTagData(stationData,"PrimaryPollutant"))
         
-        params.append([TimePoint,StationCode,AQI,O3,O3_24h,O3_8h,O3_8h_24h,CO,CO_24h,SO2,SO2_24h,NO2,NO2_24h,PM2_5,PM2_5_24h,PM10,PM10_24h,PrimaryPollutant])
+        params.append([timePoint,stationCode,AQI,o3,o3_24h,o3_8h,o3_8h_24h,co,co_24h,so2,so2_24h,no2,no2_24h,pm2_5,pm2_5_24h,pm10,pm10_24h,primaryPollutant])
 
     
     sql = "insert into raw values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    
     cursor = connect.cursor()
     
     try:

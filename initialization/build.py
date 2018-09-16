@@ -14,6 +14,10 @@ def creatTables(connect):
                 primary key(city_code)
             )
         ''')
+    except Exception as e:
+        print(e)
+
+    try:
         cursor.execute('''
             create table station(
                 station_code varchar(5) not null,
@@ -25,6 +29,10 @@ def creatTables(connect):
                 foreign key(city_code) references city(city_code)
             )
             ''')
+    except Exception as e:
+        print(e)
+
+    try:
         cursor.execute('''
             create table raw(
                 time_point timestamp not null,
@@ -49,6 +57,10 @@ def creatTables(connect):
                 foreign key(station_code) references station(station_code)
             )
             ''')
+    except Exception as e:
+        print(e)
+
+    try:
         cursor.execute('''
             create table work (
                 time_point timestamp not null,
@@ -73,10 +85,11 @@ def creatTables(connect):
                 foreign key(city_code) references city(city_code)
             )
             ''')
-        connect.commit()
-        cursor.close()
     except Exception as e:
         print(e)
+    
+    connect.commit()
+    cursor.close()
 
 
 def fillCityTable(connect):
