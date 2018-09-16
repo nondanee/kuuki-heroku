@@ -110,7 +110,7 @@ def getTagData(dom,tagName):
 
     return dom.getElementsByTagName(tagName)[0].childNodes[0].data
 
-def updateStationsInfo(allStationsData,connect):
+def updateStationsInfo(connect,allStationsData):
 
     sql = "insert into station values (%s,%s,%s,%s,%s)"
     cursor = connect.cursor()
@@ -131,9 +131,9 @@ def updateStationsInfo(allStationsData,connect):
     cursor.close()
 
 
-def pullRawData(connect):
+def pullRawData(connect,allStationsData=None):
     
-    allStationsData = getAllStationsData()
+    allStationsData = getAllStationsData() if not allStationsData else allStationsData
     params = []
     
     for stationData in allStationsData:
@@ -177,7 +177,9 @@ def pullRawData(connect):
         connect.commit()
         cursor.close()
     except Exception as e:
-        print(e)
+        if e.pgcode == 23503: 
+            updateStationsInfo(connect,allStationsData)
+            pullRawData(connect,allStationsData)
     else:
         processData(connect)
 
@@ -217,7 +219,6 @@ def processData(connect):
         and raw.station_code = station.station_code 
         group by station.city_code
     '''
-    
     
     cursor = connect.cursor()
     
