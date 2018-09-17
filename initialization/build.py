@@ -116,29 +116,3 @@ def fillCityTable(connect):
         cursor.close()
     except Exception as e:
         print(e)
-    
-def fillStationTable(connect):
-    f = open(str(pathlib.Path(__file__).parent.joinpath("stations.txt")),"r")
-    data = f.read()
-    f.close()
-
-    sql = "insert into station values (%s,%s,%s,%s,%s)"
-    params = []
-
-    stations = data.split("\n")
-    for station in stations:
-        content = station.split("\t")
-        station_code = content[0]
-        city_code = content[1]
-        position_name = content[2]
-        longitude = content[3]
-        latitude = content[4]
-        params.append([station_code,city_code,position_name,longitude,latitude])
-    
-    cursor = connect.cursor()
-    try:
-        cursor.executemany(sql,params)
-        connect.commit()
-        cursor.close()
-    except Exception as e:
-        print(e)
