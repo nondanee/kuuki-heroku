@@ -111,7 +111,7 @@ def get_tag_data(dom,tag_name):
     return dom.getElementsByTagName(tag_name)[0].childNodes[0].data
 
 def update_stations_info(connect,all_stations_data):
-
+    print('update trigger')
     cursor = connect.cursor()
     cursor.execute('select station_code from station')
     data = cursor.fetchall()
@@ -127,7 +127,7 @@ def update_stations_info(connect,all_stations_data):
 
         if station_code not in cities:
             params.append([station_code,city_code,position_name,longitude,latitude])
-
+    print(params)
     try:
         cursor.executemany('insert into station values (%s,%s,%s,%s,%s)',params)
         connect.commit()
@@ -183,8 +183,6 @@ def pull_raw_data(connect,all_stations_data=None):
         if e.pgcode == '23503': 
             update_stations_info(connect,all_stations_data)
             pull_raw_data(connect,all_stations_data)
-        else:
-            print(e.pgcode,type(e.pgcode))
     else:
         process_data(connect)
 
