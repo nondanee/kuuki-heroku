@@ -65,6 +65,8 @@ def latest():
     out = cursor.fetchall()
     cursor.close()
 
+    print(out)
+
     json_back = {
         "time_point": out[0][0].strftime('%Y-%m-%d %H:%M'),
         "cities": [None] * len(cities)
