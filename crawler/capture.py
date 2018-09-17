@@ -133,7 +133,7 @@ def update_stations_info(connect,all_stations_data):
         connect.commit()
         cursor.close()
     except Exception as e:
-        print(e)
+        print('update_stations_info',e)
 
 def pull_raw_data(connect,all_stations_data=None):
     
@@ -179,6 +179,7 @@ def pull_raw_data(connect,all_stations_data=None):
         connect.commit()
         cursor.close()
     except Exception as e:
+        print('pull_raw_data',e)
         if e.pgcode == '23503': 
             update_stations_info(connect,all_stations_data)
             pull_raw_data(connect,all_stations_data)
@@ -258,7 +259,7 @@ def process_data(connect):
         connect.commit()
         cursor.close()
     except Exception as e:
-        print(e)
+        print('process_data',e)
 
 
 def compact_table(connect):
@@ -279,5 +280,5 @@ def compact_table(connect):
         connect.commit()
         cursor.close()
     except Exception as e:
-        print(e)
+        print('compact_table',e)
     
