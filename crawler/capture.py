@@ -111,7 +111,7 @@ def get_tag_data(dom,tag_name):
     return dom.getElementsByTagName(tag_name)[0].childNodes[0].data
 
 def update_stations_info(connect,all_stations_data):
-    print('update trigger')
+
     cursor = connect.cursor()
     cursor.execute('select station_code from station')
     data = cursor.fetchall()
@@ -127,12 +127,12 @@ def update_stations_info(connect,all_stations_data):
 
         if station_code not in cities:
             params.append([station_code,city_code,position_name,longitude,latitude])
-    print(params)
     try:
         cursor.executemany('insert into station values (%s,%s,%s,%s,%s)',params)
         connect.commit()
         cursor.close()
     except Exception as e:
+        cursor.execute('rollback')
         print('update_stations_info',e)
 
 def pull_raw_data(connect,all_stations_data=None):
@@ -179,7 +179,7 @@ def pull_raw_data(connect,all_stations_data=None):
         connect.commit()
         cursor.close()
     except Exception as e:
-        print('pull_raw_data',e)
+        cursor.execute('rollback')
         if e.pgcode == '23503': 
             update_stations_info(connect,all_stations_data)
             pull_raw_data(connect,all_stations_data)
@@ -229,6 +229,7 @@ def process_data(connect):
         cursor.execute(sql_this_hour)
         this_hour_data = cursor.fetchall()
     except Exception as e:
+        cursor.execute('rollback')
         print(e)
 
     last_hour_data = {item[0]:item[1] for item in last_hour_data}
@@ -259,6 +260,7 @@ def process_data(connect):
         connect.commit()
         cursor.close()
     except Exception as e:
+        cursor.execute('rollback')
         print('process_data',e)
 
 
@@ -280,5 +282,6 @@ def compact_table(connect):
         connect.commit()
         cursor.close()
     except Exception as e:
+        cursor.execute('rollback')
         print('compact_table',e)
     

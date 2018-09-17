@@ -15,6 +15,7 @@ def creatTables(connect):
             )
         ''')
     except Exception as e:
+        cursor.execute('rollback')
         print(e)
 
     try:
@@ -30,6 +31,7 @@ def creatTables(connect):
             )
             ''')
     except Exception as e:
+        cursor.execute('rollback')
         print(e)
 
     try:
@@ -58,6 +60,7 @@ def creatTables(connect):
             )
             ''')
     except Exception as e:
+        cursor.execute('rollback')
         print(e)
 
     try:
@@ -86,6 +89,7 @@ def creatTables(connect):
             )
             ''')
     except Exception as e:
+        cursor.execute('rollback')
         print(e)
     
     connect.commit()
