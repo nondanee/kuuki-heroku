@@ -179,6 +179,7 @@ def pull_raw_data(connect,all_stations_data=None):
         connect.commit()
         cursor.close()
     except Exception as e:
+        print('pull_raw_data',e)
         cursor.execute('rollback')
         if e.pgcode == '23503': 
             update_stations_info(connect,all_stations_data)
