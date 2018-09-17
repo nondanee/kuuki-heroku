@@ -183,6 +183,8 @@ def pull_raw_data(connect,all_stations_data=None):
         if e.pgcode == '23503': 
             update_stations_info(connect,all_stations_data)
             pull_raw_data(connect,all_stations_data)
+        else:
+            print(e.pgcode,type(e.pgcode))
     else:
         process_data(connect)
 
