@@ -2,7 +2,7 @@
 import re, base64, zlib, io
 import requests
 import xml.dom.minidom, datetime
-from . import wcf
+from . import wcf, patch
 
 def get_all_stations_data():
 
@@ -106,9 +106,9 @@ def calculate_iaqi(value,value_type):
 
     return 0
 
-def get_tag_data(dom,tag_name):
+def get_tag_data(node,tag_name):
 
-    return dom.getElementsByTagName(tag_name)[0].childNodes[0].data
+    return node.getElementsByTagName(tag_name)[0].childNodes[0].data
 
 def update_stations_info(connect,all_stations_data):
 
@@ -121,6 +121,8 @@ def update_stations_info(connect,all_stations_data):
     for station_data in all_stations_data:
         station_code = get_tag_data(station_data,'StationCode')
         city_code = get_tag_data(station_data,'CityCode')
+        area = get_tag_data(station_data,'Area')
+        if area in patch.correct: city_code = patch.correct[area]
         position_name = get_tag_data(station_data,'PositionName')
         longitude = get_tag_data(station_data,'Longitude')
         latitude = get_tag_data(station_data,'Latitude')
