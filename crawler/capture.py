@@ -175,13 +175,9 @@ def pull_raw_data(connect,all_stations_data=None):
     cursor = connect.cursor()
     
     try:
-        print('params length',len(params))
         cursor.executemany('insert into raw values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',params)
-        print('before commit')
         connect.commit()
-        print('after commit')
         cursor.close()
-        print('after close')
     except Exception as e:
         print('pull_raw_data',e)
         cursor.execute('rollback')
