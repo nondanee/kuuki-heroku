@@ -23,7 +23,7 @@ def creatTables(connect):
             create table station(
                 station_code varchar(5) not null,
                 city_code integer not null,
-                position_name varchar(15) not null,
+                position_name varchar(25) not null,
                 longitude numeric(10,7) not null,
                 latitude numeric(10,7) not null,
                 primary key(station_code),
