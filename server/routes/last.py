@@ -6,7 +6,7 @@ def last(hours):
 
     if hours < 1 or hours > 12: abort(400)
 
-    city = request.args.get("city")
+    city = request.args.get('city')
     if not city: abort(400)
     if not code.available(city): abort(400)
 
@@ -34,7 +34,7 @@ def last(hours):
         WHERE city_code = {}
         AND time_point > (SELECT MAX(time_point) - INTERVAL '{}' HOUR FROM work)
         ORDER BY time_point
-    '''.format(city,hours)
+    '''.format(city, hours)
 
     cursor = g.db.cursor()
     cursor.execute(sql)
@@ -46,23 +46,23 @@ def last(hours):
     for hour_data in out:
 
         hour = {
-            "time_point": hour_data[0].strftime('%Y-%m-%d %H:%M'),
-            "aqi": hour_data[2],
-            "aqi_change": hour_data[3],
-            "o3": hour_data[4],
-            "o3_24h": hour_data[5],
-            "o3_8h": hour_data[6],
-            "o3_8h_24h": hour_data[7],
-            "co": float(hour_data[8]) if hour_data[8] is not None else hour_data[8],
-            "co_24h": float(hour_data[9]) if hour_data[9] is not None else hour_data[9],
-            "so2": hour_data[10],
-            "so2_24h": hour_data[11],
-            "no2": hour_data[12],
-            "no2_24h": hour_data[13],
-            "pm2_5": hour_data[14],
-            "pm2_5_24h": hour_data[15],
-            "pm10": hour_data[16],
-            "pm10_24h": hour_data[17]
+            'time_point': hour_data[0].strftime('%Y-%m-%d %H:%M'),
+            'aqi': hour_data[2],
+            'aqi_change': hour_data[3],
+            'o3': hour_data[4],
+            'o3_24h': hour_data[5],
+            'o3_8h': hour_data[6],
+            'o3_8h_24h': hour_data[7],
+            'co': float(hour_data[8]) if hour_data[8] is not None else hour_data[8],
+            'co_24h': float(hour_data[9]) if hour_data[9] is not None else hour_data[9],
+            'so2': hour_data[10],
+            'so2_24h': hour_data[11],
+            'no2': hour_data[12],
+            'no2_24h': hour_data[13],
+            'pm2_5': hour_data[14],
+            'pm2_5_24h': hour_data[15],
+            'pm10': hour_data[16],
+            'pm10_24h': hour_data[17]
         }
 
         json_back[hours - int((out[-1][0] - hour_data[0]).total_seconds()//3600) - 1] = hour

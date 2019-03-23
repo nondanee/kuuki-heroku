@@ -1,7 +1,7 @@
 from flask import g, jsonify
 from . import main
 
-@main.route("/cities")
+@main.route('/cities')
 def cities():
     
     sql = '''
@@ -22,6 +22,6 @@ def cities():
 
     for city_data in out:
 
-        json_back[city_data[0]] = [city_data[1],city_data[2]]
+        json_back[city_data[0]] = [city_data[1], city_data[2]]
 
     return jsonify(json_back)

@@ -97,25 +97,25 @@ def creatTables(connect):
 
 
 def fillCityTable(connect):
-    f = open(str(pathlib.Path(__file__).parent.joinpath("cities.txt")),"r")
+    f = open(str(pathlib.Path(__file__).parent.joinpath('cities.txt')), 'r')
     data = f.read()
     f.close()
 
-    sql = "insert into city values (%s,%s,%s,%s)"
+    sql = 'insert into city values (%s, %s, %s, %s)'
     params = []
 
-    cities = data.split("\n")
+    cities = data.split('\n')
     for city in cities:
-        content = city.split("\t")
+        content = city.split('\t')
         city_code = content[0]
         city_name_zh = content[1]
         city_name_en = content[2]
         province_code = city_code[0:2]
-        params.append([city_code,city_name_zh,city_name_en,province_code])
+        params.append([city_code, city_name_zh, city_name_en, province_code])
 
     cursor = connect.cursor()
     try:
-        cursor.executemany(sql,params)
+        cursor.executemany(sql, params)
         connect.commit()
         cursor.close()
     except Exception as e:

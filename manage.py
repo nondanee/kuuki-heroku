@@ -10,7 +10,7 @@ except ImportError:
 
 parse.uses_netloc.append('postgres')
 url = parse.urlparse(os.environ['DATABASE_URL'])
-db_config = 'dbname={} user={} password={} host={} port={}'.format(url.path[1:],url.username,url.password,url.hostname,url.port)
+db_config = 'dbname={} user={} password={} host={} port={}'.format(url.path[1:], url.username, url.password, url.hostname, url.port)
 app = server.create(db_config)
 
 def runserver():
