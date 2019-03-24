@@ -7,7 +7,6 @@ Powered by python3 & flask & postgresql
 - Heroku Scheduler (free but need verifying account)
 
 ## Deployment
-
 Click this button
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
@@ -60,8 +59,8 @@ GET /aqi/last4h?city=110000
 ```
 
 ## Reference
-hebingchang/air-in-china [(https://github.com/hebingchang/air-in-china)](https://github.com/hebingchang/air-in-china)  
-ernw/python-wcfbin [(https://github.com/ernw/python-wcfbin)](https://github.com/ernw/python-wcfbin)
+- [hebingchang/air-in-china](https://github.com/hebingchang/air-in-china)
+- [ernw/python-wcfbin](https://github.com/ernw/python-wcfbin)
 
 ## License
 This project is under [the MIT License](https://mit-license.org/).
