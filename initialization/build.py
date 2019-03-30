@@ -97,16 +97,15 @@ def creatTables(connect):
 
 
 def fillCityTable(connect):
-    f = open(str(pathlib.Path(__file__).parent.joinpath('cities.txt')), 'r')
-    data = f.read()
-    f.close()
+    with open(str(pathlib.Path(__file__).parent.joinpath('cities.csv')), 'r') as f:
+        data = f.read()
 
     sql = 'insert into city values (%s, %s, %s, %s)'
     params = []
 
     cities = data.split('\n')
     for city in cities:
-        content = city.split('\t')
+        content = city.split(',')
         city_code = content[0]
         city_name_zh = content[1]
         city_name_en = content[2]
