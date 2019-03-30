@@ -78,8 +78,8 @@
 320282,宜兴,yixing
 320300,徐州,hsuchow
 320400,常州,changzhou
-320481,溧阳,liyang,
-320500,苏州,soochow,
+320481,溧阳,liyang
+320500,苏州,soochow
 320581,常熟,changshu
 320582,张家港,zhangjiagang
 320583,昆山,kunshan
@@ -189,13 +189,13 @@
 411600,周口,zhoukou
 411700,驻马店,zhumadian
 420100,武汉,wuhan
-420200,黄石,huangshi,
+420200,黄石,huangshi
 420300,十堰,shiyan
 420500,宜昌,yichang
 420600,襄阳,xiangyang
 420700,鄂州,ezhou
 420800,荆门,jingmen
-420900,孝感,xiaogan,
+420900,孝感,xiaogan
 421000,荆州,jingzhou
 421100,黄冈,huanggang
 421200,咸宁,xianning
@@ -241,7 +241,7 @@
 450300,桂林,guilin
 450400,梧州,ngchow
 450500,北海,beihai
-450600,防城港,fangchenggang,
+450600,防城港,fangchenggang
 450700,钦州,qinzhou
 450800,贵港,guigang
 450900,玉林,yulin
