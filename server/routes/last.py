@@ -38,12 +38,12 @@ def last(hours):
 
     cursor = g.db.cursor()
     cursor.execute(sql)
-    out = cursor.fetchall()
+    data = cursor.fetchall()
     cursor.close()
 
-    json_back = [None] * hours
+    body = [None] * hours
 
-    for hour_data in out:
+    for hour_data in data:
 
         hour = {
             'time_point': hour_data[0].strftime('%Y-%m-%d %H:%M'),
@@ -65,6 +65,6 @@ def last(hours):
             'pm10_24h': hour_data[17]
         }
 
-        json_back[hours - int((out[-1][0] - hour_data[0]).total_seconds()//3600) - 1] = hour
+        body[hours - int((data[-1][0] - hour_data[0]).total_seconds()//3600) - 1] = hour
 
-    return jsonify(json_back)
+    return jsonify(body)

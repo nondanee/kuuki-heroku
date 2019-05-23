@@ -62,13 +62,13 @@ def latest():
 
     cursor = g.db.cursor()
     cursor.execute(sql)
-    out = cursor.fetchall()
+    data = cursor.fetchall()
     cursor.close()
 
-    json_back = {'cities': [None] * len(cities)}
-    json_back['time_point'] = out[0][0].strftime('%Y-%m-%d %H:%M') if out else None
+    body = {'cities': [None] * len(cities)}
+    body['time_point'] = data[0][0].strftime('%Y-%m-%d %H:%M') if data else None
     
-    for city_data in out:
+    for city_data in data:
 
         city = {
             'city_code': city_data[1],
@@ -90,6 +90,6 @@ def latest():
             'pm10_24h': city_data[17]
         }
         
-        json_back['cities'][cities.index(str(city_data[1]))] = city
+        body['cities'][cities.index(str(city_data[1]))] = city
 
-    return jsonify(json_back)
+    return jsonify(body)

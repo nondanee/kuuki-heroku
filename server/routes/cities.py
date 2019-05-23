@@ -15,13 +15,13 @@ def cities():
 
     cursor = g.db.cursor()
     cursor.execute(sql)
-    out = cursor.fetchall()
+    data = cursor.fetchall()
     cursor.close()
 
-    json_back = {}
+    body = {}
 
-    for city_data in out:
+    for city_data in data:
 
-        json_back[city_data[0]] = [city_data[1], city_data[2]]
+        body[city_data[0]] = [city_data[1], city_data[2]]
 
-    return jsonify(json_back)
+    return jsonify(body)

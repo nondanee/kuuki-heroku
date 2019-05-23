@@ -35,13 +35,13 @@ def rank():
 
     cursor = g.db.cursor()
     cursor.execute(sql)
-    out = cursor.fetchall()
+    data = cursor.fetchall()
     cursor.close()
 
-    json_back = {'cities': []}
-    json_back['time_point'] = out[0][0].strftime('%Y-%m-%d %H:%M') if out else None
+    body = {'cities': []}
+    body['time_point'] = data[0][0].strftime('%Y-%m-%d %H:%M') if data else None
 
-    for city_data in out:
+    for city_data in data:
 
         if city_data[2] == None: continue
 
@@ -65,6 +65,6 @@ def rank():
             'pm10_24h': city_data[17],
         }
 
-        json_back['cities'].append(city)
+        body['cities'].append(city)
 
-    return jsonify(json_back)
+    return jsonify(body)

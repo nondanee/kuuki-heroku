@@ -97,7 +97,7 @@ def creat_tables(connect):
 
 
 def fill_city_table(connect):
-    with open(str(pathlib.Path(__file__).parent.joinpath('cities.csv')), 'r') as f:
+    with open(str(pathlib.Path(__file__).parent.joinpath('cities.csv')), 'r', encoding = 'utf-8') as f:
         data = f.read()
 
     sql = 'insert into city values (%s, %s, %s, %s)'
