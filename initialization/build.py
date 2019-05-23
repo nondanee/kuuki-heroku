@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pathlib
 
-def creatTables(connect):
+def creat_tables(connect):
 
     cursor = connect.cursor()
     try:
@@ -96,7 +96,7 @@ def creatTables(connect):
     cursor.close()
 
 
-def fillCityTable(connect):
+def fill_city_table(connect):
     with open(str(pathlib.Path(__file__).parent.joinpath('cities.csv')), 'r') as f:
         data = f.read()
 

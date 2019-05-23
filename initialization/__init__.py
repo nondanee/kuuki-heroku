@@ -1,5 +1,5 @@
 from . import build
 
 def run(connect):
-    build.creatTables(connect)
-    build.fillCityTable(connect)
+    build.creat_tables(connect)
+    build.fill_city_table(connect)
